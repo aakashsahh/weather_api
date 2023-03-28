@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weather_project/splash_screen.dart';
 
 import 'utils/text_style/text_style.dart';
 
@@ -22,6 +23,8 @@ class _HomeScreenState extends State<HomeScreen> {
             child: InkWell(
                 onTap: () {
                   debugPrint("help button was clicked");
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (builder) => const splash()));
                 },
                 child: const Icon(Icons.help)),
           )
