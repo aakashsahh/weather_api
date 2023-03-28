@@ -24,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () {
                   debugPrint("help button was clicked");
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (builder) => const splash()));
+                      MaterialPageRoute(builder: (builder) => splash()));
                 },
                 child: const Icon(Icons.help)),
           )
