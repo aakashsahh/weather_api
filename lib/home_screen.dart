@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'utils/text_style/text_style.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -55,17 +57,40 @@ class _HomeScreenState extends State<HomeScreen> {
                   fontSize: 20,
                   fontWeight: FontWeight.w400,
                 ),
-              )
+              ),
+              const Divider(color: Colors.grey)
             ],
           ),
+          const SizedBox(height: 15),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Column(
-                children: [Text("Humidity")],
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text("Humidity", style: textStyle),
+                  SizedBox(height: 10),
+                  Text(
+                    "Pressure",
+                    style: textStyle,
+                  ),
+                  SizedBox(height: 10),
+                  Text("Wind", style: textStyle),
+                  SizedBox(height: 10),
+                  Text("Feels Like", style: textStyle)
+                ],
               ),
               Column(
-                children: [Text("9870")],
+                children: const [
+                  Text("900", style: textStyle),
+                  SizedBox(height: 10),
+                  Text("980", style: textStyle),
+                  SizedBox(height: 10),
+                  Text("90", style: textStyle),
+                  SizedBox(height: 10),
+                  Text("200", style: textStyle),
+                ],
               ),
             ],
           )
