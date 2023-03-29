@@ -3,12 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:weather_project/home_screen.dart';
 
-class splash extends StatefulWidget {
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({Key? key}) : super(key: key);
+
   @override
-  State<splash> createState() => _splashState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _splashState extends State<splash> {
+class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();

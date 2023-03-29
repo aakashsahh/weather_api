@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:weather_project/Services/weather_api_client.dart';
 import 'package:weather_project/splash_screen.dart';
+import 'package:weather_project/weather_model.dart';
 
 import 'utils/text_style/text_style.dart';
 
@@ -11,6 +13,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  WeatherApiClient weatherApiClient = WeatherApiClient();
+
+  WeatherModel? weatherModel;
+
+  TextEditingController inputController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,9 +35,10 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.all(12.0),
             child: InkWell(
                 onTap: () {
-                  debugPrint("help button was clicked");
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (builder) => splash()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (builder) => const SplashScreen()));
                 },
                 child: const Icon(Icons.help)),
           )
@@ -37,6 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               const SizedBox(height: 10),
               TextFormField(
+                  controller: inputController,
                   decoration: InputDecoration(
                       label: const Text("Your location"),
                       hintText: "Enter your location",
@@ -48,11 +63,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   shape: const StadiumBorder(),
                   side: const BorderSide(width: 2, color: Colors.red),
                 ),
-                onPressed: () {},
+                onPressed: () async {
+                  await weatherApiClient
+                      .getCurrentWeather(inputController.text);
+                },
                 child: const Text('Update'),
               ),
               const SizedBox(height: 8),
-              currentweather(Icons.wb_sunny_rounded, "36.4", "Kathmandu"),
+              currentweather(Icons.wb_sunny_rounded, "36.4", ""),
               const SizedBox(height: 20),
               const Text(
                 "Additional Information",
@@ -86,12 +104,12 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Column(
                 children: const [
-                  Text("900", style: textStyle),
-                  SizedBox(height: 10),
+                  Text("100", style: textStyle),
+                  const SizedBox(height: 10),
                   Text("980", style: textStyle),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Text("90", style: textStyle),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Text("200", style: textStyle),
                 ],
               ),
@@ -130,5 +148,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  additionalInformation() {}
+  // @override
+  // void dispose() {
+  //   inputController.dispose();
+
+  //   super.dispose();
+  // }
 }
