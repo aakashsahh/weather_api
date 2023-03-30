@@ -12,6 +12,8 @@ class WeatherApiClient {
 
     var response = await http.get(endpoint);
     var body = jsonDecode(response.body);
-    return WeatherModel.fromJson(body);
+    var data = WeatherModel.fromJson(body);
+
+    return data;
   }
 }

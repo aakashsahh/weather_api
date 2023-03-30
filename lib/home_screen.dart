@@ -15,14 +15,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   WeatherApiClient weatherApiClient = WeatherApiClient();
 
-  WeatherModel? weatherModel;
+  WeatherModel? weatherData;
 
   TextEditingController inputController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +36,11 @@ class _HomeScreenState extends State<HomeScreen> {
             child: InkWell(
                 onTap: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (builder) => const SplashScreen()));
+                    context,
+                    MaterialPageRoute(
+                      builder: (builder) => const SplashScreen(),
+                    ),
+                  );
                 },
                 child: const Icon(Icons.help)),
           )
@@ -51,12 +53,15 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               const SizedBox(height: 10),
               TextFormField(
-                  controller: inputController,
-                  decoration: InputDecoration(
-                      label: const Text("Your location"),
-                      hintText: "Enter your location",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15)))),
+                controller: inputController,
+                decoration: InputDecoration(
+                  label: const Text("Location"),
+                  hintText: "Enter location",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+              ),
               const SizedBox(height: 10),
               OutlinedButton(
                 style: OutlinedButton.styleFrom(
@@ -64,13 +69,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   side: const BorderSide(width: 2, color: Colors.red),
                 ),
                 onPressed: () async {
-                  await weatherApiClient
+                  var data = await weatherApiClient
                       .getCurrentWeather(inputController.text);
+                  setState(() {
+                    if (data != null) {
+                      weatherData = data;
+                    }
+                  });
                 },
                 child: const Text('Update'),
               ),
               const SizedBox(height: 8),
-              currentweather(Icons.wb_sunny_rounded, "36.4", ""),
+              currentweather(),
               const SizedBox(height: 20),
               const Text(
                 "Additional Information",
@@ -83,54 +93,75 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           const SizedBox(height: 15),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text("Humidity", style: textStyle),
-                  SizedBox(height: 10),
-                  Text(
-                    "Pressure",
-                    style: textStyle,
-                  ),
-                  SizedBox(height: 10),
-                  Text("Wind", style: textStyle),
-                  SizedBox(height: 10),
-                  Text("Feels Like", style: textStyle)
-                ],
-              ),
-              Column(
-                children: const [
-                  Text("100", style: textStyle),
-                  const SizedBox(height: 10),
-                  Text("980", style: textStyle),
-                  const SizedBox(height: 10),
-                  Text("90", style: textStyle),
-                  const SizedBox(height: 10),
-                  Text("200", style: textStyle),
-                ],
-              ),
-            ],
-          )
+          Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text("Humidity", style: textStyle),
+                    Text(
+                      getHumidity(),
+                      style: textStyle,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Pressure",
+                        style: textStyle,
+                      ),
+                      Text(
+                        weatherData?.pressure.toString() ?? 'unaware',
+                        style: textStyle,
+                      ),
+                    ]),
+                const SizedBox(height: 10),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      const Text("Wind", style: textStyle),
+                      Text(
+                        weatherData?.wind.toString() ?? 'unaware',
+                        style: textStyle,
+                      ),
+                    ]),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text("Feels Like", style: textStyle),
+                    Text(
+                      weatherData?.feelsLike.toString() ?? 'unaware',
+                      style: textStyle,
+                    ),
+                  ],
+                ),
+              ]),
         ]),
       ),
     );
   }
 
-  currentweather(IconData icon, String temp, String location) {
+  currentweather() {
     return Center(
       child: Column(children: [
-        Icon(
-          icon,
+        const Icon(
+          Icons.wb_sunny_rounded,
           color: Colors.orange,
           size: 50,
         ),
         const SizedBox(height: 10),
         Text(
-          temp,
+          weatherData?.currentTemp.toString() ?? 'Hi! I am not available',
           style: const TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 22,
@@ -138,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         const SizedBox(height: 4),
         Text(
-          location,
+          weatherData?.cityName ?? "Sorry, I don't know now where am I",
           style: const TextStyle(
             fontWeight: FontWeight.w300,
             fontSize: 16,
@@ -148,10 +179,16 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // @override
-  // void dispose() {
-  //   inputController.dispose();
+  updateUI(var decodedData) {
+    if (decodedData == null) {
+    } else {}
+  }
 
-  //   super.dispose();
-  // }
+  String getHumidity() {
+    if (weatherData != null && weatherData!.humidity != null) {
+      return weatherData!.humidity.toString();
+    } else {
+      return 'unaware';
+    }
+  }
 }

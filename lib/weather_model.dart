@@ -4,7 +4,7 @@ class WeatherModel {
   int? pressure;
   double? feelsLike;
   double? currentTemp;
-  double? wind;
+  int? wind;
   WeatherModel(
     this.cityName,
     this.currentTemp,
@@ -18,7 +18,7 @@ class WeatherModel {
     feelsLike = json['main']['feels_like'];
     humidity = json['main']['humidity'];
     pressure = json['main']['pressure'];
-    wind = json['wind'];
+    wind = json['wind']['deg'];
     cityName = json['name'];
   }
 }
