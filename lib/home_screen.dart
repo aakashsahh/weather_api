@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:weather_project/Services/weather_api_client.dart';
 import 'package:weather_project/splash_screen.dart';
 import 'package:weather_project/weather_model.dart';
-
 import 'utils/text_style/text_style.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -82,21 +81,21 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 8),
               currentweather(),
               const SizedBox(height: 20),
-              const Text(
-                "Additional Information",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              const Divider(color: Colors.grey)
             ],
           ),
           const SizedBox(height: 15),
           Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                const Text(
+                  "Additional Information",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                const Divider(color: Colors.grey),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -154,10 +153,14 @@ class _HomeScreenState extends State<HomeScreen> {
   currentweather() {
     return Center(
       child: Column(children: [
-        const Icon(
-          Icons.wb_sunny_rounded,
-          color: Colors.orange,
-          size: 50,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            (weatherData?.icon != null)
+                ? Image.network(
+                    "https://openweathermap.org/img/wn/${weatherData?.icon ?? "10d"}@2x.png")
+                : const Text("No image found")
+          ],
         ),
         const SizedBox(height: 10),
         Text(
@@ -171,10 +174,18 @@ class _HomeScreenState extends State<HomeScreen> {
         Text(
           weatherData?.cityName ?? "Sorry, I don't know now where am I",
           style: const TextStyle(
-            fontWeight: FontWeight.w300,
+            fontWeight: FontWeight.w400,
             fontSize: 16,
           ),
         ),
+        const SizedBox(height: 4),
+        Text(
+          weatherData?.condition ?? "Sorry, I don't know now where am I",
+          style: const TextStyle(
+            fontWeight: FontWeight.w300,
+            fontSize: 14,
+          ),
+        )
       ]),
     );
   }
