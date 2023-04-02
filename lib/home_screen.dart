@@ -35,20 +35,29 @@ class _HomeScreenState extends State<HomeScreen> {
     _getCurrentPosition();
   }
 
-  Future<void> _getCurrentPosition() async {
+  Future<Object> _getCurrentPosition() async {
     final hasPermission = await _handlePermission();
 
     if (!hasPermission) {
-      return;
+      return {};
     }
 
     Position _localPosition = await _geolocatorPlatform.getCurrentPosition();
     setState(() {
       position = _localPosition;
     });
-  }
 
-  getWeatherByLatLong() {}
+    var data = await weatherApiClient.getWeatherByLatLon(
+        _localPosition.latitude, _localPosition.longitude);
+
+    setState(() {
+      if (data != null) {
+        weatherData = data;
+      }
+    });
+
+    return _localPosition;
+  }
 
   Future<bool> _handlePermission() async {
     bool serviceEnabled;
@@ -68,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
       permission = await _geolocatorPlatform.requestPermission();
       if (permission == LocationPermission.denied) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text(_kPermissionDeniedMessage)),
+          const SnackBar(content: Text("Location Permission is denied")),
         );
 
         return false;
@@ -77,7 +86,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (permission == LocationPermission.deniedForever) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(_kPermissionDeniedForeverMessage)),
+        const SnackBar(
+            content: Text(
+                "Location Permission is denied, Please enable it from settings")),
       );
 
       return false;
@@ -225,88 +236,48 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   currentweather() {
-    if (position != null) {
-      return Center(
-        child: Column(children: [
-          (weatherData != null && weatherData!.icon != null)
-              ? Image.network(
-                  "https://openweathermap.org/img/wn/${weatherData!.icon}@2x.png",
-                  height: 100,
-                  width: 100,
-                )
-              : const Text("No image found"),
-          Text(
-            (weatherData != null && weatherData!.currentTemp != null)
-                ? '${weatherData!.currentTemp} \u2103'
-                : "I dont know",
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 22,
-            ),
+    return Center(
+      child: Column(children: [
+        (weatherData != null && weatherData!.icon != null)
+            ? Image.network(
+                "https://openweathermap.org/img/wn/${weatherData!.icon}@2x.png",
+                height: 100,
+                width: 100,
+              )
+            : const Text("No image found"),
+        Text(
+          (weatherData != null && weatherData!.currentTemp != null)
+              ? '${weatherData!.currentTemp} \u2103'
+              : "No data",
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 22,
           ),
-          const SizedBox(height: 4),
-          Text(
-            weatherData?.cityName ?? "Sorry, I don't know now where am I",
-            style: const TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: 16,
-            ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          weatherData?.cityName ?? "null",
+          style: const TextStyle(
+            fontWeight: FontWeight.w400,
+            fontSize: 16,
           ),
-          const SizedBox(height: 4),
-          Text(
-            weatherData?.condition ?? "Sorry, I don't know now where am I",
-            style: const TextStyle(
-              fontWeight: FontWeight.w300,
-              fontSize: 14,
-            ),
-          )
-        ]),
-      );
-    } else {
-      return Column(
-        children: [
-          const Text("No location"),
-          ElevatedButton(
-            onPressed: () {
-              askPermission();
-            },
-            child: const Text('Ask Button'),
-          )
-        ],
-      );
-    }
+        ),
+        const SizedBox(height: 4),
+        Text(
+          weatherData?.condition ?? "null",
+          style: const TextStyle(
+            fontWeight: FontWeight.w300,
+            fontSize: 14,
+          ),
+        )
+      ]),
+    );
   }
 
   // updateUI(var decodedData) {
   //   if (decodedData == null) {
   //   } else {}
   // }
-
-  askPermission() async {
-    var permission = await _geolocatorPlatform.requestPermission();
-    if (permission == LocationPermission.denied) {
-      if (permission == LocationPermission.denied) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text(_kPermissionDeniedMessage)),
-        );
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(_kPermissionDeniedForeverMessage)),
-      );
-    }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text(_kPermissionGrantedMessage)),
-    );
-
-    Position _localPosition = await _geolocatorPlatform.getCurrentPosition();
-    setState(() {
-      position = _localPosition;
-    });
-  }
 
   String getHumidity() {
     if (weatherData != null && weatherData!.humidity != null) {
