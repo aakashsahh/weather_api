@@ -226,7 +226,9 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             const Text("Feels Like", style: textStyle),
             Text(
-              weatherData?.feelsLike.toString() ?? 'unaware',
+              (weatherData != null && weatherData!.feelsLike != null)
+                  ? '${weatherData!.feelsLike} \u2103'
+                  : "No data",
               style: textStyle,
             ),
           ],
